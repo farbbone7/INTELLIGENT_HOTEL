@@ -1,0 +1,823 @@
+openapi: 3.0.3
+info:
+  title: INTELLIGENT HOTEL API
+  version: 1.0.0
+  description: API para la gestion inteligente de solicitudes, servicios, personal
+    y eventos hoteleros.
+paths:
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HotelTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HotelTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelTokenObtainPair'
+          description: ''
+  /api/auth/me/:
+    get:
+      operationId: auth_me_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+          description: ''
+  /api/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/core/areas/:
+    get:
+      operationId: core_areas_list
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: query
+        name: area_type
+        schema:
+          type: string
+          enum:
+          - BAR
+          - CONCIERGE
+          - EVENTS
+          - HOUSEKEEPING
+          - KITCHEN
+          - MAINTENANCE
+          - OTHER
+          - RECEPTION
+          - RESTAURANT
+          - ROOM_SERVICE
+          - SECURITY
+        description: |-
+          * `RECEPTION` - Recepción
+          * `RESTAURANT` - Restaurante
+          * `BAR` - Bar
+          * `KITCHEN` - Cocina
+          * `HOUSEKEEPING` - Habitaciones y housekeeping
+          * `MAINTENANCE` - Mantenimiento
+          * `EVENTS` - Eventos y banquetes
+          * `ROOM_SERVICE` - Room service
+          * `CONCIERGE` - Conserjería
+          * `SECURITY` - Seguridad
+          * `OTHER` - Otra área
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOperationalAreaList'
+          description: ''
+    post:
+      operationId: core_areas_create
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+  /api/core/areas/{id}/:
+    get:
+      operationId: core_areas_retrieve
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+    put:
+      operationId: core_areas_update
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+    patch:
+      operationId: core_areas_partial_update
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOperationalArea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOperationalArea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOperationalArea'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+    delete:
+      operationId: core_areas_destroy
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/core/hotels/:
+    get:
+      operationId: core_hotels_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHotelList'
+          description: ''
+    post:
+      operationId: core_hotels_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+  /api/core/hotels/{id}/:
+    get:
+      operationId: core_hotels_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+    put:
+      operationId: core_hotels_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+    patch:
+      operationId: core_hotels_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHotel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHotel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHotel'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+    delete:
+      operationId: core_hotels_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AreaTypeEnum:
+      enum:
+      - RECEPTION
+      - RESTAURANT
+      - BAR
+      - KITCHEN
+      - HOUSEKEEPING
+      - MAINTENANCE
+      - EVENTS
+      - ROOM_SERVICE
+      - CONCIERGE
+      - SECURITY
+      - OTHER
+      type: string
+      description: |-
+        * `RECEPTION` - Recepción
+        * `RESTAURANT` - Restaurante
+        * `BAR` - Bar
+        * `KITCHEN` - Cocina
+        * `HOUSEKEEPING` - Habitaciones y housekeeping
+        * `MAINTENANCE` - Mantenimiento
+        * `EVENTS` - Eventos y banquetes
+        * `ROOM_SERVICE` - Room service
+        * `CONCIERGE` - Conserjería
+        * `SECURITY` - Seguridad
+        * `OTHER` - Otra área
+    CategoryEnum:
+      enum:
+      - '4'
+      - '5'
+      type: string
+      description: |-
+        * `4` - 4 estrellas
+        * `5` - 5 estrellas
+    CurrentUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: Nombre de usuario
+          description: 'Requerido. 150 carácteres como máximo. Únicamente letras,
+            dígitos y @/./+/-/_ '
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Correo electrónico
+        first_name:
+          type: string
+          readOnly: true
+          title: Nombre
+        last_name:
+          type: string
+          readOnly: true
+          title: Apellidos
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+          title: Rol del usuario
+        hotel_id:
+          type: integer
+          readOnly: true
+          nullable: true
+        hotel_name:
+          type: string
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+          title: Activo
+          description: Indica si el usuario debe ser tratado como activo. Desmarque
+            esta opción en lugar de borrar la cuenta.
+        is_staff:
+          type: boolean
+          readOnly: true
+          title: Es staff
+          description: Indica si el usuario puede entrar en este sitio de administración.
+        is_superuser:
+          type: boolean
+          readOnly: true
+          title: Es superusuario
+          description: Indica que este usuario tiene todos los permisos sin asignárselos
+            explícitamente.
+      required:
+      - email
+      - first_name
+      - hotel_id
+      - hotel_name
+      - id
+      - is_active
+      - is_staff
+      - is_superuser
+      - last_name
+      - role
+      - username
+    Hotel:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nombre del hotel
+          maxLength: 150
+        commercial_name:
+          type: string
+          title: Nombre comercial
+          maxLength: 150
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          title: Categoría
+        tax_id:
+          type: string
+          title: NIT
+          maxLength: 30
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        phone:
+          type: string
+          maxLength: 30
+        address:
+          type: string
+          maxLength: 250
+        city:
+          type: string
+          maxLength: 100
+        country:
+          type: string
+          maxLength: 100
+        timezone:
+          type: string
+          maxLength: 60
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address
+      - category
+      - city
+      - created_at
+      - id
+      - name
+      - updated_at
+    HotelTokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    OperationalArea:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          maxLength: 100
+        area_type:
+          $ref: '#/components/schemas/AreaTypeEnum'
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - hotel_name
+      - id
+      - name
+    PaginatedHotelList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hotel'
+    PaginatedOperationalAreaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperationalArea'
+    PatchedHotel:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nombre del hotel
+          maxLength: 150
+        commercial_name:
+          type: string
+          title: Nombre comercial
+          maxLength: 150
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          title: Categoría
+        tax_id:
+          type: string
+          title: NIT
+          maxLength: 30
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        phone:
+          type: string
+          maxLength: 30
+        address:
+          type: string
+          maxLength: 250
+        city:
+          type: string
+          maxLength: 100
+        country:
+          type: string
+          maxLength: 100
+        timezone:
+          type: string
+          maxLength: 60
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedOperationalArea:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          maxLength: 100
+        area_type:
+          $ref: '#/components/schemas/AreaTypeEnum'
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    RoleEnum:
+      enum:
+      - ADMINISTRADOR
+      - GERENTE
+      - RECEPCION
+      - SUPERVISOR
+      - COORDINADOR_EVENTOS
+      - PERSONAL_OPERATIVO
+      type: string
+      description: |-
+        * `ADMINISTRADOR` - Administrador
+        * `GERENTE` - Gerente
+        * `RECEPCION` - Recepción
+        * `SUPERVISOR` - Supervisor operativo
+        * `COORDINADOR_EVENTOS` - Coordinador de eventos
+        * `PERSONAL_OPERATIVO` - Personal operativo
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

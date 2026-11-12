@@ -1,0 +1,33 @@
+﻿# Entorno virtual
+.venv/
+venv/
+env/
+
+# Variables sensibles
+.env
+.env.*
+
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
+
+# Entornos y editores
+.vscode/
+.idea/
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Pruebas manuales locales
+local_diagnostics/

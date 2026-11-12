@@ -1,0 +1,3798 @@
+openapi: 3.0.3
+info:
+  title: INTELLIGENT HOTEL API
+  version: 1.0.0
+  description: API para la gestion inteligente de solicitudes, servicios, personal
+    y eventos hoteleros.
+paths:
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HotelTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HotelTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelTokenObtainPair'
+          description: ''
+  /api/auth/me/:
+    get:
+      operationId: auth_me_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+          description: ''
+  /api/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/core/areas/:
+    get:
+      operationId: core_areas_list
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: query
+        name: area_type
+        schema:
+          type: string
+          enum:
+          - BAR
+          - CONCIERGE
+          - EVENTS
+          - HOUSEKEEPING
+          - KITCHEN
+          - MAINTENANCE
+          - OTHER
+          - RECEPTION
+          - RESTAURANT
+          - ROOM_SERVICE
+          - SECURITY
+        description: |-
+          * `RECEPTION` - Recepción
+          * `RESTAURANT` - Restaurante
+          * `BAR` - Bar
+          * `KITCHEN` - Cocina
+          * `HOUSEKEEPING` - Habitaciones y housekeeping
+          * `MAINTENANCE` - Mantenimiento
+          * `EVENTS` - Eventos y banquetes
+          * `ROOM_SERVICE` - Room service
+          * `CONCIERGE` - Conserjería
+          * `SECURITY` - Seguridad
+          * `OTHER` - Otra área
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOperationalAreaList'
+          description: ''
+    post:
+      operationId: core_areas_create
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+  /api/core/areas/{id}/:
+    get:
+      operationId: core_areas_retrieve
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+    put:
+      operationId: core_areas_update
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OperationalArea'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+    patch:
+      operationId: core_areas_partial_update
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOperationalArea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOperationalArea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOperationalArea'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationalArea'
+          description: ''
+    delete:
+      operationId: core_areas_destroy
+      description: |-
+        Limita automáticamente las consultas al hotel del usuario.
+
+        Para modelos relacionados con el hotel mediante otra entidad,
+        se puede configurar hotel_filter en cada vista.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Área operativa.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/core/hotels/:
+    get:
+      operationId: core_hotels_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHotelList'
+          description: ''
+    post:
+      operationId: core_hotels_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+  /api/core/hotels/{id}/:
+    get:
+      operationId: core_hotels_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+    put:
+      operationId: core_hotels_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+    patch:
+      operationId: core_hotels_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHotel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHotel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHotel'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+          description: ''
+    delete:
+      operationId: core_hotels_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Hotel.
+        required: true
+      tags:
+      - core
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/events/assignments/:
+    get:
+      operationId: events_assignments_list
+      parameters:
+      - in: query
+        name: assigned_role
+        schema:
+          type: string
+      - in: query
+        name: employee_id
+        schema:
+          type: integer
+      - in: query
+        name: event_id
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - ASSIGNED
+          - CANCELLED
+          - COMPLETED
+          - CONFIRMED
+          - IN_PROGRESS
+        description: |-
+          * `ASSIGNED` - Asignado
+          * `CONFIRMED` - Confirmado
+          * `IN_PROGRESS` - En servicio
+          * `COMPLETED` - Finalizado
+          * `CANCELLED` - Cancelado
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEventStaffAssignmentList'
+          description: ''
+    post:
+      operationId: events_assignments_create
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventStaffAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventStaffAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventStaffAssignment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStaffAssignment'
+          description: ''
+  /api/events/assignments/{id}/:
+    get:
+      operationId: events_assignments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Asignación de personal
+          a evento.
+        required: true
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStaffAssignment'
+          description: ''
+    put:
+      operationId: events_assignments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Asignación de personal
+          a evento.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventStaffAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventStaffAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventStaffAssignment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStaffAssignment'
+          description: ''
+    patch:
+      operationId: events_assignments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Asignación de personal
+          a evento.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEventStaffAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEventStaffAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEventStaffAssignment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStaffAssignment'
+          description: ''
+    delete:
+      operationId: events_assignments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Asignación de personal
+          a evento.
+        required: true
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/events/events/:
+    get:
+      operationId: events_events_list
+      parameters:
+      - in: query
+        name: event_type
+        schema:
+          type: string
+          enum:
+          - BANQUET
+          - CONGRESS
+          - CONVENTION
+          - CORPORATE
+          - OTHER
+          - SOCIAL
+          - WEDDING
+        description: |-
+          * `WEDDING` - Boda
+          * `BANQUET` - Banquete
+          * `CONGRESS` - Congreso
+          * `CONVENTION` - Convención
+          * `CORPORATE` - Evento corporativo
+          * `SOCIAL` - Evento social
+          * `OTHER` - Otro
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      - in: query
+        name: space_id
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - CANCELLED
+          - COMPLETED
+          - CONFIRMED
+          - IN_PROGRESS
+          - PLANNING
+          - REQUESTED
+        description: |-
+          * `REQUESTED` - Solicitado
+          * `CONFIRMED` - Confirmado
+          * `PLANNING` - En planificación
+          * `IN_PROGRESS` - En ejecución
+          * `COMPLETED` - Finalizado
+          * `CANCELLED` - Cancelado
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEventList'
+          description: ''
+    post:
+      operationId: events_events_create
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Event'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+  /api/events/events/{id}/:
+    get:
+      operationId: events_events_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Evento.
+        required: true
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+    put:
+      operationId: events_events_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Evento.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Event'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+    patch:
+      operationId: events_events_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Evento.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+    delete:
+      operationId: events_events_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Evento.
+        required: true
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/events/spaces/:
+    get:
+      operationId: events_spaces_list
+      parameters:
+      - in: query
+        name: has_audio_visual
+        schema:
+          type: boolean
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEventSpaceList'
+          description: ''
+    post:
+      operationId: events_spaces_create
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventSpace'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventSpace'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventSpace'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSpace'
+          description: ''
+  /api/events/spaces/{id}/:
+    get:
+      operationId: events_spaces_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Espacio para eventos.
+        required: true
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSpace'
+          description: ''
+    put:
+      operationId: events_spaces_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Espacio para eventos.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventSpace'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventSpace'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventSpace'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSpace'
+          description: ''
+    patch:
+      operationId: events_spaces_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Espacio para eventos.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEventSpace'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEventSpace'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEventSpace'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSpace'
+          description: ''
+    delete:
+      operationId: events_spaces_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Espacio para eventos.
+        required: true
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/services/history/:
+    get:
+      operationId: services_history_list
+      parameters:
+      - in: query
+        name: new_status
+        schema:
+          type: string
+          enum:
+          - ASSIGNED
+          - CANCELLED
+          - CLOSED
+          - IN_PROGRESS
+          - ON_HOLD
+          - RECEIVED
+          - RESOLVED
+        description: |-
+          * `RECEIVED` - Recibida
+          * `ASSIGNED` - Asignada
+          * `IN_PROGRESS` - En atención
+          * `ON_HOLD` - En espera
+          * `RESOLVED` - Resuelta
+          * `CLOSED` - Cerrada
+          * `CANCELLED` - Cancelada
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - in: query
+        name: request
+        schema:
+          type: integer
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestHistoryList'
+          description: ''
+  /api/services/history/{id}/:
+    get:
+      operationId: services_history_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Historial de solicitud.
+        required: true
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestHistory'
+          description: ''
+  /api/services/requests/:
+    get:
+      operationId: services_requests_list
+      parameters:
+      - in: query
+        name: assigned_area
+        schema:
+          type: integer
+      - in: query
+        name: assigned_employee
+        schema:
+          type: integer
+      - in: query
+        name: channel
+        schema:
+          type: string
+          enum:
+          - DIGITAL
+          - INTERNAL
+          - IN_PERSON
+          - PHONE
+          - RECEPTION
+        description: |-
+          * `RECEPTION` - Recepción
+          * `PHONE` - Teléfono
+          * `IN_PERSON` - Presencial
+          * `DIGITAL` - Canal digital
+          * `INTERNAL` - Solicitud interna
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - in: query
+        name: priority
+        schema:
+          type: string
+          enum:
+          - CRITICAL
+          - HIGH
+          - LOW
+          - MEDIUM
+        description: |-
+          * `LOW` - Baja
+          * `MEDIUM` - Media
+          * `HIGH` - Alta
+          * `CRITICAL` - Crítica
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      - in: query
+        name: service_type
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - ASSIGNED
+          - CANCELLED
+          - CLOSED
+          - IN_PROGRESS
+          - ON_HOLD
+          - RECEIVED
+          - RESOLVED
+        description: |-
+          * `RECEIVED` - Recibida
+          * `ASSIGNED` - Asignada
+          * `IN_PROGRESS` - En atención
+          * `ON_HOLD` - En espera
+          * `RESOLVED` - Resuelta
+          * `CLOSED` - Cerrada
+          * `CANCELLED` - Cancelada
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceRequestList'
+          description: ''
+    post:
+      operationId: services_requests_create
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceRequest'
+          description: ''
+  /api/services/requests/{id}/:
+    get:
+      operationId: services_requests_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Solicitud de servicio.
+        required: true
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceRequest'
+          description: ''
+    put:
+      operationId: services_requests_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Solicitud de servicio.
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceRequest'
+          description: ''
+    patch:
+      operationId: services_requests_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Solicitud de servicio.
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceRequest'
+          description: ''
+  /api/services/types/:
+    get:
+      operationId: services_types_list
+      parameters:
+      - in: query
+        name: area
+        schema:
+          type: integer
+      - in: query
+        name: category
+        schema:
+          type: string
+          enum:
+          - BAR
+          - CONCIERGE
+          - HOUSEKEEPING
+          - MAINTENANCE
+          - OTHER
+          - RESTAURANT
+          - ROOM_SERVICE
+          - SPECIAL
+          - VIP
+        description: |-
+          * `ROOM_SERVICE` - Room service
+          * `RESTAURANT` - Restaurante
+          * `BAR` - Bar
+          * `HOUSEKEEPING` - Housekeeping
+          * `MAINTENANCE` - Mantenimiento
+          * `VIP` - Atención VIP
+          * `CONCIERGE` - Conserjería
+          * `SPECIAL` - Solicitud especial
+          * `OTHER` - Otro
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceTypeList'
+          description: ''
+    post:
+      operationId: services_types_create
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+  /api/services/types/{id}/:
+    get:
+      operationId: services_types_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Tipo de servicio.
+        required: true
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+    put:
+      operationId: services_types_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Tipo de servicio.
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+    patch:
+      operationId: services_types_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Tipo de servicio.
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceType'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+  /api/staff/employee-shifts/:
+    get:
+      operationId: staff_employee_shifts_list
+      parameters:
+      - in: query
+        name: employee_id
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      - in: query
+        name: shift_id
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - CANCELLED
+          - COMPLETED
+          - CONFIRMED
+          - SCHEDULED
+        description: |-
+          * `SCHEDULED` - Programado
+          * `CONFIRMED` - Confirmado
+          * `COMPLETED` - Finalizado
+          * `CANCELLED` - Cancelado
+      - in: query
+        name: work_date
+        schema:
+          type: string
+          format: date
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEmployeeShiftList'
+          description: ''
+    post:
+      operationId: staff_employee_shifts_create
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeShift'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployeeShift'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployeeShift'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeShift'
+          description: ''
+  /api/staff/employee-shifts/{id}/:
+    get:
+      operationId: staff_employee_shifts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Programación de
+          turno.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeShift'
+          description: ''
+    put:
+      operationId: staff_employee_shifts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Programación de
+          turno.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeShift'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployeeShift'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployeeShift'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeShift'
+          description: ''
+    patch:
+      operationId: staff_employee_shifts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Programación de
+          turno.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployeeShift'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployeeShift'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployeeShift'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeShift'
+          description: ''
+    delete:
+      operationId: staff_employee_shifts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Programación de
+          turno.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/staff/employees/:
+    get:
+      operationId: staff_employees_list
+      parameters:
+      - in: query
+        name: area_id
+        schema:
+          type: integer
+      - in: query
+        name: employment_status
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - INACTIVE
+          - LEAVE
+          - SUSPENDED
+          - VACATION
+        description: |-
+          * `ACTIVE` - Activo
+          * `VACATION` - Vacaciones
+          * `LEAVE` - Licencia
+          * `SUSPENDED` - Suspendido
+          * `INACTIVE` - Retirado
+      - in: query
+        name: hotel_id
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - in: query
+        name: position_id
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEmployeeList'
+          description: ''
+    post:
+      operationId: staff_employees_create
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Employee'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+  /api/staff/employees/{id}/:
+    get:
+      operationId: staff_employees_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Empleado.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+    put:
+      operationId: staff_employees_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Empleado.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Employee'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+    patch:
+      operationId: staff_employees_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Empleado.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployee'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployee'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+    delete:
+      operationId: staff_employees_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Empleado.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/staff/positions/:
+    get:
+      operationId: staff_positions_list
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPositionList'
+          description: ''
+    post:
+      operationId: staff_positions_create
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Position'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Position'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Position'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+          description: ''
+  /api/staff/positions/{id}/:
+    get:
+      operationId: staff_positions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Cargo.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+          description: ''
+    put:
+      operationId: staff_positions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Cargo.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Position'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Position'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Position'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+          description: ''
+    patch:
+      operationId: staff_positions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Cargo.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPosition'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPosition'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPosition'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+          description: ''
+    delete:
+      operationId: staff_positions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Cargo.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/staff/shifts/:
+    get:
+      operationId: staff_shifts_list
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedShiftList'
+          description: ''
+    post:
+      operationId: staff_shifts_create
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shift'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Shift'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Shift'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+          description: ''
+  /api/staff/shifts/{id}/:
+    get:
+      operationId: staff_shifts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Tipo de turno.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+          description: ''
+    put:
+      operationId: staff_shifts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Tipo de turno.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shift'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Shift'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Shift'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+          description: ''
+    patch:
+      operationId: staff_shifts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Tipo de turno.
+        required: true
+      tags:
+      - staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedShift'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedShift'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedShift'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+          description: ''
+    delete:
+      operationId: staff_shifts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Tipo de turno.
+        required: true
+      tags:
+      - staff
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AreaTypeEnum:
+      enum:
+      - RECEPTION
+      - RESTAURANT
+      - BAR
+      - KITCHEN
+      - HOUSEKEEPING
+      - MAINTENANCE
+      - EVENTS
+      - ROOM_SERVICE
+      - CONCIERGE
+      - SECURITY
+      - OTHER
+      type: string
+      description: |-
+        * `RECEPTION` - Recepción
+        * `RESTAURANT` - Restaurante
+        * `BAR` - Bar
+        * `KITCHEN` - Cocina
+        * `HOUSEKEEPING` - Habitaciones y housekeeping
+        * `MAINTENANCE` - Mantenimiento
+        * `EVENTS` - Eventos y banquetes
+        * `ROOM_SERVICE` - Room service
+        * `CONCIERGE` - Conserjería
+        * `SECURITY` - Seguridad
+        * `OTHER` - Otra área
+    ChannelEnum:
+      enum:
+      - RECEPTION
+      - PHONE
+      - IN_PERSON
+      - DIGITAL
+      - INTERNAL
+      type: string
+      description: |-
+        * `RECEPTION` - Recepción
+        * `PHONE` - Teléfono
+        * `IN_PERSON` - Presencial
+        * `DIGITAL` - Canal digital
+        * `INTERNAL` - Solicitud interna
+    CurrentUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: Nombre de usuario
+          description: 'Requerido. 150 carácteres como máximo. Únicamente letras,
+            dígitos y @/./+/-/_ '
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Correo electrónico
+        first_name:
+          type: string
+          readOnly: true
+          title: Nombre
+        last_name:
+          type: string
+          readOnly: true
+          title: Apellidos
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+          title: Rol del usuario
+        hotel_id:
+          type: integer
+          readOnly: true
+          nullable: true
+        hotel_name:
+          type: string
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+          title: Activo
+          description: Indica si el usuario debe ser tratado como activo. Desmarque
+            esta opción en lugar de borrar la cuenta.
+        is_staff:
+          type: boolean
+          readOnly: true
+          title: Es staff
+          description: Indica si el usuario puede entrar en este sitio de administración.
+        is_superuser:
+          type: boolean
+          readOnly: true
+          title: Es superusuario
+          description: Indica que este usuario tiene todos los permisos sin asignárselos
+            explícitamente.
+      required:
+      - email
+      - first_name
+      - hotel_id
+      - hotel_name
+      - id
+      - is_active
+      - is_staff
+      - is_superuser
+      - last_name
+      - role
+      - username
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        user_id:
+          type: integer
+          nullable: true
+        employee_code:
+          type: string
+          maxLength: 30
+        document_number:
+          type: string
+          maxLength: 30
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        phone:
+          type: string
+          maxLength: 30
+        position_id:
+          type: integer
+        position_name:
+          type: string
+          readOnly: true
+        area_id:
+          type: integer
+        area_name:
+          type: string
+          readOnly: true
+        hire_date:
+          type: string
+          format: date
+        employment_status:
+          $ref: '#/components/schemas/EmploymentStatusEnum'
+        emergency_contact:
+          type: string
+          maxLength: 150
+        emergency_phone:
+          type: string
+          maxLength: 30
+        observations:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - area_id
+      - area_name
+      - created_at
+      - document_number
+      - employee_code
+      - first_name
+      - hire_date
+      - hotel_name
+      - id
+      - last_name
+      - position_id
+      - position_name
+      - updated_at
+    EmployeeShift:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+          readOnly: true
+        employee_id:
+          type: integer
+        employee_name:
+          type: string
+          readOnly: true
+        shift_id:
+          type: integer
+        shift_name:
+          type: string
+          readOnly: true
+        work_date:
+          type: string
+          format: date
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/EmployeeShiftStatusEnum'
+        observations:
+          type: string
+        created_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - employee_id
+      - employee_name
+      - end_datetime
+      - hotel_id
+      - id
+      - shift_id
+      - shift_name
+      - start_datetime
+      - work_date
+    EmployeeShiftStatusEnum:
+      enum:
+      - SCHEDULED
+      - CONFIRMED
+      - COMPLETED
+      - CANCELLED
+      type: string
+      description: |-
+        * `SCHEDULED` - Programado
+        * `CONFIRMED` - Confirmado
+        * `COMPLETED` - Finalizado
+        * `CANCELLED` - Cancelado
+    EmploymentStatusEnum:
+      enum:
+      - ACTIVE
+      - VACATION
+      - LEAVE
+      - SUSPENDED
+      - INACTIVE
+      type: string
+      description: |-
+        * `ACTIVE` - Activo
+        * `VACATION` - Vacaciones
+        * `LEAVE` - Licencia
+        * `SUSPENDED` - Suspendido
+        * `INACTIVE` - Retirado
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        space_id:
+          type: integer
+        space_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 30
+        title:
+          type: string
+          maxLength: 180
+        event_type:
+          $ref: '#/components/schemas/EventTypeEnum'
+        client_name:
+          type: string
+          maxLength: 150
+        client_email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        client_phone:
+          type: string
+          maxLength: 30
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        expected_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        status:
+          $ref: '#/components/schemas/EventStatusEnum'
+        special_requirements:
+          type: string
+        setup_notes:
+          type: string
+        created_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - client_name
+      - code
+      - created_at
+      - created_by
+      - end_datetime
+      - event_type
+      - expected_guests
+      - hotel_name
+      - id
+      - space_id
+      - space_name
+      - start_datetime
+      - title
+      - updated_at
+    EventSpace:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        location:
+          type: string
+          maxLength: 150
+        capacity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        description:
+          type: string
+        has_audio_visual:
+          type: boolean
+        is_active:
+          type: boolean
+      required:
+      - capacity
+      - hotel_name
+      - id
+      - name
+    EventStaffAssignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        event_id:
+          type: integer
+        event_code:
+          type: string
+          readOnly: true
+        event_title:
+          type: string
+          readOnly: true
+        employee_id:
+          type: integer
+        employee_name:
+          type: string
+          readOnly: true
+        employee_code:
+          type: string
+          readOnly: true
+        assigned_role:
+          type: string
+          maxLength: 100
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/EventStaffAssignmentStatusEnum'
+        observations:
+          type: string
+        assigned_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - assigned_by
+      - assigned_role
+      - created_at
+      - employee_code
+      - employee_id
+      - employee_name
+      - end_datetime
+      - event_code
+      - event_id
+      - event_title
+      - id
+      - start_datetime
+    EventStaffAssignmentStatusEnum:
+      enum:
+      - ASSIGNED
+      - CONFIRMED
+      - IN_PROGRESS
+      - COMPLETED
+      - CANCELLED
+      type: string
+      description: |-
+        * `ASSIGNED` - Asignado
+        * `CONFIRMED` - Confirmado
+        * `IN_PROGRESS` - En servicio
+        * `COMPLETED` - Finalizado
+        * `CANCELLED` - Cancelado
+    EventStatusEnum:
+      enum:
+      - REQUESTED
+      - CONFIRMED
+      - PLANNING
+      - IN_PROGRESS
+      - COMPLETED
+      - CANCELLED
+      type: string
+      description: |-
+        * `REQUESTED` - Solicitado
+        * `CONFIRMED` - Confirmado
+        * `PLANNING` - En planificación
+        * `IN_PROGRESS` - En ejecución
+        * `COMPLETED` - Finalizado
+        * `CANCELLED` - Cancelado
+    EventTypeEnum:
+      enum:
+      - WEDDING
+      - BANQUET
+      - CONGRESS
+      - CONVENTION
+      - CORPORATE
+      - SOCIAL
+      - OTHER
+      type: string
+      description: |-
+        * `WEDDING` - Boda
+        * `BANQUET` - Banquete
+        * `CONGRESS` - Congreso
+        * `CONVENTION` - Convención
+        * `CORPORATE` - Evento corporativo
+        * `SOCIAL` - Evento social
+        * `OTHER` - Otro
+    Hotel:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nombre del hotel
+          maxLength: 150
+        commercial_name:
+          type: string
+          title: Nombre comercial
+          maxLength: 150
+        category:
+          allOf:
+          - $ref: '#/components/schemas/HotelCategoryEnum'
+          title: Categoría
+        tax_id:
+          type: string
+          title: NIT
+          maxLength: 30
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        phone:
+          type: string
+          maxLength: 30
+        address:
+          type: string
+          maxLength: 250
+        city:
+          type: string
+          maxLength: 100
+        country:
+          type: string
+          maxLength: 100
+        timezone:
+          type: string
+          maxLength: 60
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address
+      - category
+      - city
+      - created_at
+      - id
+      - name
+      - updated_at
+    HotelCategoryEnum:
+      enum:
+      - '4'
+      - '5'
+      type: string
+      description: |-
+        * `4` - 4 estrellas
+        * `5` - 5 estrellas
+    HotelTokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    NewStatusEnum:
+      enum:
+      - RECEIVED
+      - ASSIGNED
+      - IN_PROGRESS
+      - ON_HOLD
+      - RESOLVED
+      - CLOSED
+      - CANCELLED
+      type: string
+      description: |-
+        * `RECEIVED` - Recibida
+        * `ASSIGNED` - Asignada
+        * `IN_PROGRESS` - En atención
+        * `ON_HOLD` - En espera
+        * `RESOLVED` - Resuelta
+        * `CLOSED` - Cerrada
+        * `CANCELLED` - Cancelada
+    OperationalArea:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          maxLength: 100
+        area_type:
+          $ref: '#/components/schemas/AreaTypeEnum'
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - hotel_name
+      - id
+      - name
+    PaginatedEmployeeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+    PaginatedEmployeeShiftList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeShift'
+    PaginatedEventList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    PaginatedEventSpaceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSpace'
+    PaginatedEventStaffAssignmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventStaffAssignment'
+    PaginatedHotelList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hotel'
+    PaginatedOperationalAreaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperationalArea'
+    PaginatedPositionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Position'
+    PaginatedRequestHistoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestHistory'
+    PaginatedServiceRequestList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceRequest'
+    PaginatedServiceTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceType'
+    PaginatedShiftList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+    PatchedEmployee:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        user_id:
+          type: integer
+          nullable: true
+        employee_code:
+          type: string
+          maxLength: 30
+        document_number:
+          type: string
+          maxLength: 30
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        phone:
+          type: string
+          maxLength: 30
+        position_id:
+          type: integer
+        position_name:
+          type: string
+          readOnly: true
+        area_id:
+          type: integer
+        area_name:
+          type: string
+          readOnly: true
+        hire_date:
+          type: string
+          format: date
+        employment_status:
+          $ref: '#/components/schemas/EmploymentStatusEnum'
+        emergency_contact:
+          type: string
+          maxLength: 150
+        emergency_phone:
+          type: string
+          maxLength: 30
+        observations:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedEmployeeShift:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+          readOnly: true
+        employee_id:
+          type: integer
+        employee_name:
+          type: string
+          readOnly: true
+        shift_id:
+          type: integer
+        shift_name:
+          type: string
+          readOnly: true
+        work_date:
+          type: string
+          format: date
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/EmployeeShiftStatusEnum'
+        observations:
+          type: string
+        created_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        space_id:
+          type: integer
+        space_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 30
+        title:
+          type: string
+          maxLength: 180
+        event_type:
+          $ref: '#/components/schemas/EventTypeEnum'
+        client_name:
+          type: string
+          maxLength: 150
+        client_email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        client_phone:
+          type: string
+          maxLength: 30
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        expected_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        status:
+          $ref: '#/components/schemas/EventStatusEnum'
+        special_requirements:
+          type: string
+        setup_notes:
+          type: string
+        created_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedEventSpace:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        location:
+          type: string
+          maxLength: 150
+        capacity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        description:
+          type: string
+        has_audio_visual:
+          type: boolean
+        is_active:
+          type: boolean
+    PatchedEventStaffAssignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        event_id:
+          type: integer
+        event_code:
+          type: string
+          readOnly: true
+        event_title:
+          type: string
+          readOnly: true
+        employee_id:
+          type: integer
+        employee_name:
+          type: string
+          readOnly: true
+        employee_code:
+          type: string
+          readOnly: true
+        assigned_role:
+          type: string
+          maxLength: 100
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/EventStaffAssignmentStatusEnum'
+        observations:
+          type: string
+        assigned_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedHotel:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nombre del hotel
+          maxLength: 150
+        commercial_name:
+          type: string
+          title: Nombre comercial
+          maxLength: 150
+        category:
+          allOf:
+          - $ref: '#/components/schemas/HotelCategoryEnum'
+          title: Categoría
+        tax_id:
+          type: string
+          title: NIT
+          maxLength: 30
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        phone:
+          type: string
+          maxLength: 30
+        address:
+          type: string
+          maxLength: 250
+        city:
+          type: string
+          maxLength: 100
+        country:
+          type: string
+          maxLength: 100
+        timezone:
+          type: string
+          maxLength: 60
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedOperationalArea:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel_id:
+          type: integer
+        hotel_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          maxLength: 100
+        area_type:
+          $ref: '#/components/schemas/AreaTypeEnum'
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedPosition:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        is_active:
+          type: boolean
+    PatchedServiceRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel:
+          type: integer
+        service_type:
+          type: integer
+        request_code:
+          type: string
+          readOnly: true
+        guest_name:
+          type: string
+          maxLength: 150
+        room_number:
+          type: string
+          maxLength: 20
+        contact_phone:
+          type: string
+          maxLength: 30
+        description:
+          type: string
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+        status:
+          $ref: '#/components/schemas/NewStatusEnum'
+        channel:
+          $ref: '#/components/schemas/ChannelEnum'
+        assigned_area:
+          type: integer
+          nullable: true
+        assigned_employee:
+          type: integer
+          nullable: true
+        requested_at:
+          type: string
+          format: date-time
+          readOnly: true
+        response_deadline:
+          type: string
+          format: date-time
+          nullable: true
+        first_response_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        resolved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        closed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        resolution_notes:
+          type: string
+        created_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        updated_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedServiceType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel:
+          type: integer
+        area:
+          type: integer
+        code:
+          type: string
+          maxLength: 30
+        name:
+          type: string
+          maxLength: 120
+        category:
+          $ref: '#/components/schemas/ServiceTypeCategoryEnum'
+        description:
+          type: string
+        target_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Tiempo objetivo de atención en minutos.
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedShift:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 80
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        break_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        description:
+          type: string
+        is_active:
+          type: boolean
+    Position:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        is_active:
+          type: boolean
+      required:
+      - id
+      - name
+    PriorityEnum:
+      enum:
+      - LOW
+      - MEDIUM
+      - HIGH
+      - CRITICAL
+      type: string
+      description: |-
+        * `LOW` - Baja
+        * `MEDIUM` - Media
+        * `HIGH` - Alta
+        * `CRITICAL` - Crítica
+    RequestHistory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        request:
+          type: integer
+          readOnly: true
+        previous_status:
+          allOf:
+          - $ref: '#/components/schemas/NewStatusEnum'
+          readOnly: true
+        new_status:
+          allOf:
+          - $ref: '#/components/schemas/NewStatusEnum'
+          readOnly: true
+        observations:
+          type: string
+          readOnly: true
+        changed_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        changed_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - changed_at
+      - changed_by
+      - id
+      - new_status
+      - observations
+      - previous_status
+      - request
+    RoleEnum:
+      enum:
+      - ADMINISTRADOR
+      - GERENTE
+      - RECEPCION
+      - SUPERVISOR
+      - COORDINADOR_EVENTOS
+      - PERSONAL_OPERATIVO
+      type: string
+      description: |-
+        * `ADMINISTRADOR` - Administrador
+        * `GERENTE` - Gerente
+        * `RECEPCION` - Recepción
+        * `SUPERVISOR` - Supervisor operativo
+        * `COORDINADOR_EVENTOS` - Coordinador de eventos
+        * `PERSONAL_OPERATIVO` - Personal operativo
+    ServiceRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel:
+          type: integer
+        service_type:
+          type: integer
+        request_code:
+          type: string
+          readOnly: true
+        guest_name:
+          type: string
+          maxLength: 150
+        room_number:
+          type: string
+          maxLength: 20
+        contact_phone:
+          type: string
+          maxLength: 30
+        description:
+          type: string
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+        status:
+          $ref: '#/components/schemas/NewStatusEnum'
+        channel:
+          $ref: '#/components/schemas/ChannelEnum'
+        assigned_area:
+          type: integer
+          nullable: true
+        assigned_employee:
+          type: integer
+          nullable: true
+        requested_at:
+          type: string
+          format: date-time
+          readOnly: true
+        response_deadline:
+          type: string
+          format: date-time
+          nullable: true
+        first_response_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        resolved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        closed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        resolution_notes:
+          type: string
+        created_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        updated_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - closed_at
+      - created_at
+      - created_by
+      - description
+      - first_response_at
+      - guest_name
+      - hotel
+      - id
+      - request_code
+      - requested_at
+      - resolved_at
+      - service_type
+      - updated_at
+      - updated_by
+    ServiceType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        hotel:
+          type: integer
+        area:
+          type: integer
+        code:
+          type: string
+          maxLength: 30
+        name:
+          type: string
+          maxLength: 120
+        category:
+          $ref: '#/components/schemas/ServiceTypeCategoryEnum'
+        description:
+          type: string
+        target_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Tiempo objetivo de atención en minutos.
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - area
+      - category
+      - code
+      - created_at
+      - hotel
+      - id
+      - name
+    ServiceTypeCategoryEnum:
+      enum:
+      - ROOM_SERVICE
+      - RESTAURANT
+      - BAR
+      - HOUSEKEEPING
+      - MAINTENANCE
+      - VIP
+      - CONCIERGE
+      - SPECIAL
+      - OTHER
+      type: string
+      description: |-
+        * `ROOM_SERVICE` - Room service
+        * `RESTAURANT` - Restaurante
+        * `BAR` - Bar
+        * `HOUSEKEEPING` - Housekeeping
+        * `MAINTENANCE` - Mantenimiento
+        * `VIP` - Atención VIP
+        * `CONCIERGE` - Conserjería
+        * `SPECIAL` - Solicitud especial
+        * `OTHER` - Otro
+    Shift:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 80
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        break_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        description:
+          type: string
+        is_active:
+          type: boolean
+      required:
+      - end_time
+      - id
+      - name
+      - start_time
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
