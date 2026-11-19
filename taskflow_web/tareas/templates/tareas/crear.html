@@ -1,0 +1,52 @@
+
+{% extends "tareas/base.html" %}
+
+{% block titulo %}Nueva tarea | TaskFlow 2.0{% endblock %}
+
+{% block contenido %}
+
+<h2>Crear nueva tarea</h2>
+
+<p>
+    Registra una nueva actividad en el sistema TaskFlow.
+</p>
+
+<br>
+
+{% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+{% endif %}
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <label for="descripcion">
+        Descripción de la tarea:
+    </label>
+
+    <br><br>
+
+    <textarea
+        id="descripcion"
+        name="descripcion"
+        rows="5"
+        placeholder="Escribe aquí la descripción de la tarea..."
+        style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: Arial; font-size: 15px;"
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit" class="boton">
+        Guardar tarea
+    </button>
+
+    <a href="{% url 'listar' %}" class="boton">
+        Cancelar
+    </a>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+
+{% extends "tareas/base.html" %}
+
+{% block titulo %}Listado de tareas | TaskFlow 2.0{% endblock %}
+
+{% block contenido %}
+
+<h2>Listado de tareas</h2>
+
+<p>
+    Administra y consulta las tareas de tu sistema TaskFlow.
+</p>
+
+<br>
+
+<a href="{% url 'crear' %}" class="boton">
+    + Crear nueva tarea
+</a>
+
+<br><br>
+
+{% if tareas %}
+
+    <h3>Tareas registradas</h3>
+
+    <ul>
+        {% for tarea in tareas %}
+            <li>{{ tarea }}</li>
+        {% endfor %}
+    </ul>
+
+{% else %}
+
+    <p>
+        Actualmente no hay tareas registradas.
+        Utiliza el botón para crear tu primera tarea.
+    </p>
+
+{% endif %}
+
+{% endblock %}
